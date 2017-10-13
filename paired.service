@@ -1,0 +1,15 @@
+[Unit]
+Description=Watch Me Code - Paired Sockets
+After=network.target
+
+[Service]
+WorkingDirectory=/srv/paired
+User=www-data
+Group=www-data
+Type=simple
+ExecStart=/usr/bin/gunicorn --worker-class eventlet -w 1 module:app
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+flask>=0.12.1
+flask-socketio>=2.9.2
+gevent>=1.2.2
+gevent-websocket>=0.10.1
+randomwords>=0.2.1

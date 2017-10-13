@@ -1,38 +1,47 @@
 <!doctype html>
 <html>
 <head>
-    <title>Watch me code!</title>
+    <title>Watch Me Code!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+    <style>
+    textarea {
+        width: 100%;
+        max-width: 100%
+        min-width: 100%;
+        min-height: 600px;
+        font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+        font-size: 12pt;
+        border: none;
+    }
+    </style>
 </head>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    height: 100%;
-    width: 100%;
-    font-family: sans-serif;
-}
-
-#code {
-    padding: 5pt;
-    margin-top: 20pt;
-    height: 600px;
-    max-height: 100%;
-    min-height: 300px;
-    width: 100%;
-}
-.padding {
-    padding: 20pt;
-}
-</style>
 <body>
 
-<div class='padding'>
-    <h2>Token: <span id='token'></span></h2>
-    <textarea id="code" placeholder="Code here"></textarea>
+<div class='container is-fluid'>
+    <div class='box'>
+        <nav class='level'>
+            <div class='level-item has-text-centered'>
+                <h1 class='title'>Watch Me Code</h1>
+            </div>
+            <div class='level-item has-text-centered'>
+                <div>
+                    <p class='heading'>Token</p>
+                    <p class='subtitle' id='token'></p>
+                </div>
+            </div>
+            <div class='level-item has-text-centered'>
+                <div>
+                    <p class='heading'>Role</p>
+                    <p class='subtitle' id='token_role'></p>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <textarea class='box' id="code" placeholder="Code here"></textarea>
+    
 </div>
 
 <script>
@@ -47,10 +56,9 @@ body {
     })
     
     if ('{{ token }}'.length > 0) {
-        console.log("producer")
-        
         var timeout;
-        document.getElementById('code').addEventListener('keyup', function(e) {
+        
+        $('#code').on('keyup', function(e) {
             clearTimeout(timeout)
             timeout = setTimeout(function() {
                 socket.send({
@@ -61,28 +69,29 @@ body {
             }, 250)
         })
         
-        var token = document.createElement('a')
-        token.href = sock_url + '/' + '{{ token }}';
-        token.target = '_blank';
-        token.appendChild(document.createTextNode(document.domain + '/' + '{{token}}'))
-        document.getElementById('token').appendChild(token)
+        $('#token_role').text('Host')
+        $('<a/>', {
+            href: sock_url + '/' + '{{ token }}',
+            class: 'link',
+            target: '_blank',
+            text: '{{ token }}',
+        }).appendTo('#token')
     }
     else {
-        console.log("subscriber")
-        
         var token = window.location.pathname.slice(1)
+        
         socket.send({
             action: 'join',
             token: token
         })
         socket.on('message', function(data) {
-            document.getElementById('code').value = data;
+            $("#code").val(data)
         })
         
-        document.getElementById('token').appendChild(document.createTextNode(token))
-        document.getElementById('code').readOnly = true;
+        $("#token_role").text('Watch')
+        $("#token").text(token)
+        $("#code").prop('readonly', true)
     }
-    
 </script>
 </body>
 </html>

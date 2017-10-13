@@ -6,7 +6,7 @@ blah.
 Install
 -------
 ```sh
-sudo apt-get install git python3 python3-pip python3-gunicorn
+sudo apt-get install git python3 python3-pip
 
 sudo mkdir /srv/paired
 sudo chown www-data: /srv/paired
@@ -21,4 +21,5 @@ sudo ln -s /srv/paired/nginx_paired.conf /etc/nginx/sites-enabled/paired
 sudo systemctl daemon-reload
 sudo systemctl start paired
 sudo systemctl enable paired
+sudo systemctl reload nginx
 ```

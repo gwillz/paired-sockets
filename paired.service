@@ -7,7 +7,7 @@ WorkingDirectory=/srv/paired
 User=www-data
 Group=www-data
 Type=simple
-ExecStart=/usr/bin/gunicorn --worker-class eventlet -w 1 module:app
+ExecStart=/usr/bin/python3 -m app
 RestartSec=10
 Restart=always
 

@@ -1,0 +1,2 @@
+CACHE_TYPE = 'simple'
+TEMPLATES_AUTO_RELOAD = True

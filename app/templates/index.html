@@ -9,18 +9,28 @@
     <style>
     textarea {
         width: 100%;
-        max-width: 100%
+        max-width: 100%;
         min-width: 100%;
-        min-height: 400px;
+        height: 250px;
         font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
         font-size: 12pt;
         border: none;
     }
+    html, body {
+        height: 100%;
+    }
+    .wrap {
+        min-height: calc(100% - 140pt);
+        margin-bottom: 140pt;
+    }
+    footer {
+        height: 160pt;
+        margin-top: -160pt;
+    }
     </style>
 </head>
 <body>
-
-<div class='container is-fluid'>
+<div class='wrap container is-fluid'>
     <div class='box'>
         <nav class='level'>
             <div class='level-item has-text-centered'>
@@ -41,7 +51,6 @@
         </nav>
     </div>
     <textarea class='box' id="code" placeholder="Code here"></textarea>
-    
 </div>
 <footer class='footer'>
     <div class='container is-fluid'>
@@ -49,19 +58,16 @@
             <p>
                 <strong>Watch Me Code!</strong>
                 <br>
-                Share the token with others so they can watch you code.
+                Share the token so others can watch you code.
             </p>
             <p>
-                Licensed MIT probably.
-                <br>
-                <a href="//git.mk2es.com.au/gwillz/paired-sockets" target='_blank'>Code</a>
-                <br>
-                <a href='//gwillz.com.au'>Gwilyn Saunders</a>
+                Licensed MIT or whatever
+                | <a href="//git.mk2es.com.au/gwillz/paired-sockets" target='_blank'>Code</a>
+                | <a href='//gwillz.com.au'>Gwilyn Saunders</a>
             </p>
         </div>
     </div>
 </footer>
-
 <script>
     var sock_url = '//' + document.domain + ':' + location.port
     

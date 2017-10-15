@@ -1,10 +1,15 @@
 Watch Me Code!
 ==============
+Live code sharing!
 
-Live code sharing.
-Scrapped together with Flask, Socket.io and Bulma styles.
+Scrapped together with Flask, Socket.io, and Bulma styles.
+
 Don't expect things to be considered properly, it fundamentally works and that's
 all it needs to do.
+
+A live version can be seen at [paired.gwillz.com](//paired.gwillz.com).
+
+But please don't DDoS me. There's no diffing for the code/data, so I can imagine traffic being quite ugly if it picked up.
 
 
 Known bugs/todos
@@ -20,6 +25,9 @@ Known bugs/todos
 - cannot resume/restore code if session is closed
   - potentially solved if storing code server-side
   - `#featurecreep`
+- only send diffs of code
+  - would also require server-side code or a 'request' packet
+  - `#prematureoptimization`
 
 
 Install
@@ -31,7 +39,7 @@ sudo mkdir -p /srv/paired
 cd /srv/paired
 sudo chown www-data: .
 
-git clone https://git.mk2es.com/gwillz/paired-sockets .
+git clone https://github.com/gwillz/paired-sockets .
 
 sudo -u www-data -H pip3 install -r requirements.txt --user
 

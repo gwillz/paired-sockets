@@ -7,14 +7,12 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
     <style>
-    textarea {
+    #code {
+        display: block;
         width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        height: 250px;
+        min-height: 200px;
         font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
         font-size: 12pt;
-        border: none;
     }
     html, body {
         height: 100%;
@@ -50,7 +48,9 @@
             </div>
         </nav>
     </div>
-    <textarea class='box' id="code" placeholder="Code here"></textarea>
+    <pre class='box'>
+        <code id="code" contenteditable></code>
+    </pre>
 </div>
 <footer class='footer'>
     <div class='container is-fluid'>
@@ -58,7 +58,11 @@
             <p>
                 <strong>Watch Me Code!</strong>
                 <br>
-                Share the token so others can watch you code.
+                {% if token %}
+                Share the token so others can watch you code
+                {% else %}
+                You are watching someone else code.
+                {% endif %}
             </p>
             <p>
                 Licensed MIT or whatever
@@ -88,7 +92,7 @@
                 socket.send({
                     action: 'data',
                     token: '{{ token }}',
-                    data: e.target.value,
+                    data: $(e.target).html(),
                 })
             }, 250)
         })
@@ -109,13 +113,13 @@
             token: token
         })
         socket.on('message', function(data) {
-            $("#code").val(data)
+            $("#code").html(data)
         })
         
         $("#token_role").text('Watch')
         $("title").text('Watch Me Code! - ' + token)
         $("#token").text(token)
-        $("#code").prop('readonly', true)
+        $("#code").prop('contenteditable', false)
     }
 </script>
 </body>

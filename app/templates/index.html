@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
 <head>
-    <title>Watch Me Code! {{ '- Hosting' if token else '' }}</title>
+    <title>Watch Me Code! - {{ 'Hosting' if hosting else token }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/hint.css/2.5.0/hint.min.css">
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
     <style>
     #code {
         display: block;
@@ -25,6 +27,10 @@
         height: 160pt;
         margin-top: -160pt;
     }
+    .subtitle {
+        height: 2em !important;
+        padding: 0.25em 0.55em;
+    }
     </style>
 </head>
 <body>
@@ -37,19 +43,31 @@
             <div class='level-item has-text-centered'>
                 <div>
                     <p class='heading'>Token</p>
-                    <p class='subtitle' id='token'></p>
+                    {% if hosting %}
+                        <button class='button is-white subtitle clipboard hint--rounded hint--bounce'
+                                data-clipboard-text='{{ token_url }}'
+                                data-hint='Copy'>
+                            {{ token }}
+                        </button>
+                    {% else %}
+                    <p class='subtitle'>
+                        {{ token }}
+                    </p>
+                    {% endif %}
                 </div>
             </div>
             <div class='level-item has-text-centered'>
                 <div>
                     <p class='heading'>Role</p>
-                    <p class='subtitle' id='token_role'></p>
+                    <p class='subtitle'>
+                        {{ 'Host' if hosting else 'Watch' }}
+                    </p>
                 </div>
             </div>
         </nav>
     </div>
     <pre class='box'>
-        <code id="code" contenteditable></code>
+        <code id="code" tabindex="-1" {% if hosting %}contenteditable{% endif %}></code>
     </pre>
 </div>
 <footer class='footer'>
@@ -58,7 +76,7 @@
             <p>
                 <strong>Watch Me Code!</strong>
                 <br>
-                {% if token %}
+                {% if hosting %}
                 Share the token so others can watch you code
                 {% else %}
                 You are watching someone else code
@@ -74,16 +92,9 @@
 </footer>
 <script>
     var sock_url = '//' + document.domain + ':' + location.port
-    
     var socket = io.connect(sock_url)
-    socket.on('connect', function() {
-        console.log('connected.')
-    })
-    socket.on('disconnect', function() {
-        console.log('disconnected.')
-    })
     
-    if ('{{ token }}'.length > 0) {
+    {% if hosting %}
         var timeout;
         
         $('#code').on('keyup', function(e) {
@@ -96,31 +107,41 @@
                 })
             }, 250)
         })
-        
-        $('#token_role').text('Host')
-        $('<a/>', {
-            href: sock_url + '/' + '{{ token }}',
-            class: 'link',
-            target: '_blank',
-            text: '{{ token }}',
-        }).appendTo('#token')
-    }
-    else {
-        var token = window.location.pathname.slice(1)
-        
+    {% else %}
         socket.send({
             action: 'join',
-            token: token
+            token: '{{ token }}',
         })
         socket.on('message', function(data) {
             $("#code").html(data)
         })
+    {% endif %}
+    
+    new Clipboard('.clipboard')
+    $('.clipboard').on('click', function(e) {
+        $(e.target)
+        .attr('data-hint', 'Copied!')
+        .addClass('hint--always')
+        .addClass('hint--info')
         
-        $("#token_role").text('Watch')
-        $("title").text('Watch Me Code! - ' + token)
-        $("#token").text(token)
-        $("#code").prop('contenteditable', false)
-    }
+        setTimeout(function() {
+            $(e.target)
+            .removeClass('hint--always')
+            
+            setTimeout(function() {
+                $(e.target)
+                .attr('data-hint', 'Copy')
+                .removeClass('hint--info')
+            }, 500)
+        }, 1000)
+    })
+    
+    $("#code")
+    .on('keydown', function(e) {
+        if (e.key == 'Tab') e.preventDefault()
+    })
+    .focus()
+    
 </script>
 </body>
 </html>
